@@ -1,0 +1,70 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+var total = 0;
+var a = function() { total++; };
+var b = function() { total--; };
+var functionRunner = function (f) { f(); };
+
+function setUp() {
+	total = 0;
+}
+
+function testNull() {
+	assertTrue(Function.Null.instanceOf(Function));
+	assertUndefined(Function.Null());
+}
+
+function testCreate() {
+	assertEquals(7, Function.create( function(){ return 7; } )());
+	assertEquals("p", Function.create("return 'p';")());
+	assertEquals(Function.Null, Function.create(null));
+}
+
+function testThen() {
+	var target = { x: 0 };
+	
+	var plusOne = function() { target.x += 1; }
+	var append = function() { target.x += "test"; }
+	
+	append.then(plusOne)();
+	
+	assertEquals("0test1", target.x);
+}
+
+function testThen_PassingArgumentsToBothInChain() {
+	var setOne = function(x) { $('one').x = x; };
+	var setTwo = function(x) { $('two').x = x; };
+	
+	setOne.then(setTwo)(3);
+	
+	assertEquals(3, $('one').x);
+	assertEquals(3, $('two').x);
+}
+
+function testAfter() {
+	var target = { x: 0 };
+	
+	var plusOne = function() { target.x += 1; }
+	var append = function() { target.x += "test"; }
+	
+	append.after(plusOne)();
+	
+	assertEquals("1test", target.x);
+}
+
+function testForEach() {
+	functionRunner.forEach(a, a, b, a);
+	assertEquals(2, total);
+}
+
+</script>
+</head>
+<body>
+	<span id="two"></span>
+	<span id="one"></span>
+</body>
+</html>

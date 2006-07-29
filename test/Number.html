@@ -1,0 +1,28 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testIsEven() {
+	assertTrue(new Number(8).isEven());
+	assertFalse(new Number(113).isEven());
+	assertFalse(new Number(118.12).isEven());
+}
+
+function testIsOdd() {
+	assertFalse(new Number(8).isOdd());
+	assertTrue(new Number(113).isOdd());
+	assertFalse("non-integer should", new Number(113.12).isOdd());
+}
+
+function testFormat() {
+	assertEquals("786", Number.format(786));
+	assertEquals("9,786", Number.format(9786));
+	assertEquals("6,009,786", Number.format(6009786));
+	assertEquals("9,786.432", Number.format(9786.432));
+}
+
+</script>
+</head>
+</html>

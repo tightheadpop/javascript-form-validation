@@ -1,0 +1,55 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+var thing = {a:1, b:"2", c:function(){return 3;}, d:"@this.b+this.a", e:null};
+var NULL = null;
+var UNDEF = Function.Null();
+
+function testObject$Get() {
+	assertNotUndefined("$get is defined", thing.$get);
+	assertEquals("$get numeric", 1, thing.$get("a"));
+	assertEquals("$get string", "2", thing.$get("b"));
+	assertEquals("$get function", "function", typeof thing.$get("c"));
+	assertEquals("$get closure", "21", thing.$get("d"));
+	assertEquals("$get null", null, thing.$get("e"));
+	assertUndefined("$get undefined", thing.$get("f"));
+}
+
+function testObject$Set() {
+	var stuff = {};
+	stuff.$set("a", 1);
+	assertEquals(1, stuff.a);
+}
+
+function testWithin() {
+	assertTrue('a'.within(['a',2,null]));
+	assertFalse(Function.Null.within(['a',2,null]));
+}
+
+function testIsDefined() {
+	assertTrue("string", Object.isDefined(String.Empty));
+	assertTrue("null value", Object.isDefined(NULL));
+	assertFalse("undefined variable", Object.isDefined(UNDEF));
+}
+
+function testHasValue() {
+	assertTrue(Object.hasValue(thing));
+	assertTrue($V("h"));
+	assertFalse(Object.hasValue(NULL));
+	assertFalse(Object.hasValue(UNDEF));
+	assertTrue(Object.hasValue(0));
+	assertTrue(Object.hasValue(String.Empty));
+}
+
+function testInstanceOf() {
+	assertTrue("test".instanceOf(String));
+	assertTrue(Function.Null.instanceOf(Function));
+	assertTrue("inheritence", Function.Null.instanceOf(Object));
+}
+
+</script>
+</head>
+</html>

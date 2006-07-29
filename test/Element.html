@@ -1,0 +1,42 @@
+<html>
+<head>
+<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function setUp() {
+	$('target').REQUIRED = function() { return true; };
+	$('summary').innerHTML = String.Empty;
+}
+
+function testGetElementsByTagName() {
+	assertNotUndefined("Element method is missing", Element.getElementsByTagNames);
+	assertEquals("single tag name", 1, Element.getElementsByTagNames(document, "FORM").length);
+	assertEquals("multiple tag names", 2, Element.getElementsByTagNames($("form"), "DIV", "INPUT").length);
+}
+
+function testGetContainerByTagName() {
+	assertEquals("actual parent", $('form'), Element.getContainerByTagName($('summary'), "FORM"));
+	assertEquals("not a parent", null, Element.getContainerByTagName($('summary'), "SPAN"));
+}
+
+function testGetProperty() {
+	assertEquals("@ string property should be converted to function and evaluated", 'target', Element.getProperty($('target'), 'test-property'));
+	assertEquals("property as function should be evaluated", true, Element.getProperty($('target'), 'REQUIRED'));
+}
+
+function testGetHandler() {
+	assertEquals(false, Element.getHandler($('target'), 'onclick')());
+	assertEquals('foo', Element.getHandler($('target'), 'onfoo')());
+}
+
+</script>
+</head>
+<body>
+	<span id="target" test-property="@this.id" onclick="return false" onfoo="return 'foo'"></span>
+	<form id="form">
+		<div id="summary" class="validation-summary"></div>
+		<input id="formField" NAME="formField"/>
+	</form>
+</body>
+</html>

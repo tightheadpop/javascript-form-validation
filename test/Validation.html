@@ -1,0 +1,49 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testValidationInstance() {
+	assertFalse("Validation should be an object, not a function", Validation.instanceOf(Function));
+}
+
+function testIsFloat() {
+	assertTrue("plain", Validation.isFloat("1,123.45"));
+	assertTrue("dot at end", Validation.isFloat("123."));
+	assertTrue("dot at begin", Validation.isFloat(".45"));
+	assertTrue("no dot", Validation.isFloat("12345"));
+	assertFalse("unsigned", Validation.isFloat("-12345"));
+	assertTrue("signed", Validation.isFloat("-12345", true));
+	assertFalse("leading char", Validation.isFloat("a123.45"));
+	assertFalse("double dot", Validation.isFloat("123.4.5"));
+}
+
+function testIsCurrency() {
+	assertTrue("plain curr", Validation.isCurrency("$1,123.45"));
+	assertTrue("plain curr 2", Validation.isCurrency("1123.45"));
+	assertFalse("dot at end curr", Validation.isCurrency("123."));
+	assertTrue("dot at begin curr", Validation.isCurrency(".45"));
+	assertTrue("no dot curr", Validation.isCurrency("12345"));
+	assertTrue("signed curr", Validation.isCurrency("($12345)", true));
+	assertTrue("signed curr 2", Validation.isCurrency("-12345", true));
+	assertFalse("leading char float", Validation.isCurrency("a123.45"));
+}
+
+function testMarkRequired() {
+	Form.Element.markRequired($('r'));
+	assertEquals("marked required during setup", "required", $('r').className);
+	$('r').removeAttribute('required');
+	Form.Element.markRequired($('r'));
+	assertEquals("should remove the required class name", String.Empty, $('r').className);
+}
+
+</script>
+</head>
+<body>
+	<form>
+		<input required="required" id="r" />
+		<input id="a" />
+	</form>
+</body>
+</html>

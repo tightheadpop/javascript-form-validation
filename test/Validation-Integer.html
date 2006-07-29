@@ -1,0 +1,18 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testIntegerFormat() {
+	assertTrue("basic int", Validation.isInteger("12345"));
+	assertTrue("signed int", Validation.isInteger("-12345", true));
+	assertFalse("int front", Validation.isInteger("a12345"));
+	assertFalse("int end", Validation.isInteger("12345a"));
+	assertFalse("int mid", Validation.isInteger("12a345"));
+	assertFalse("int as float", Validation.isInteger("123.45"));
+}
+
+</script>
+</head>
+</html>

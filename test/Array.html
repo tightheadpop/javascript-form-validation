@@ -1,0 +1,105 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testEquals() {
+	assertTrue("equivalent simple types", [1, 2, 3, 4].equals([1, 2, 3, 4]));
+	assertTrue("equivalent simple types with null", [1, 2, 3, null].equals([1, 2, 3, null]));
+	assertFalse("equivalent simple types mis-ordered", [1, 2, 3, 4].equals([1, 2, 4, 3]));
+}
+
+function testForEach() {
+	var count = 0;
+	var callback = function(item){ count++ };
+	[1, 2, 3, 4].forEach(callback);
+	assertEquals("invoked callback "+count+" of 4 times", 4, count);
+}
+
+function testSome() {
+	assertFalse([].some(function(a){return true;}));
+	assertTrue([1,2].some(function(a){return a == 1;}));
+	assertFalse([1,2].some(function(a){return a == 3;}));
+}
+
+function testEvery() {
+	assertTrue("no elements", [].every(function(a){return true;}));
+	assertTrue("all true", [1,2].every(function(a){return a >= 1;}));
+	assertFalse("some true", [1,2].every(function(a){return a == 1;}));
+}
+
+function testFilter() {
+	assertTrue([1,2,3].filter(function(x){return x==3;}).equals([3]));
+}
+
+function testChoose() {
+	assertEquals(4, [null, Function.Null(), 4, 5].choose());
+}
+
+function testPoke() {
+	$('required','other').poke("test-property", true);
+	assertEquals("required element should have had property set", true, Element.getProperty($('required'), "test-property"));
+	assertEquals("other element should have had property set", true, Element.getProperty($('other'), "test-property"));
+}
+
+function testContains() {
+	assertTrue("positive match", [1, 2, "3", Function.Null].contains(2));
+	assertFalse("negative match", [1, 2, "3", Function.Null].contains("test"));
+}
+
+function testExcludes() {
+	assertTrue("negative match", [1, 2, "3", Function.Null].excludes(4));
+	assertFalse("positive match", [1, 2, "3", Function.Null].excludes(2));
+}
+
+function testIndexOf() {
+	assertEquals("single value", 3, [4,3,1,5,6].indexOf(5));
+	assertEquals("double value", 1, [4,5,1,5,6].indexOf(5));
+	assertEquals("no value", -1, [4,3,1,7,6].indexOf(5));
+}
+
+function testLastIndexOf() {
+	assertEquals("single value", 3, [4,3,1,5,6].lastIndexOf(5));
+	assertEquals("double value", 3, [4,5,1,5,6].lastIndexOf(5));
+	assertEquals("no value", -1, [4,3,1,7,6].lastIndexOf(5));
+}
+
+function testDistinct() {
+	assertTrue("removing", [1,2,3].equals([1,2,3,2,1,1].distinct()));
+	assertTrue("no removing", [1,2,3].equals([1,2,3].distinct()));
+}
+
+function testUnion() {
+	assertTrue("yields distinct set", [1,2,3,4,5].equals([1,1,2,4].union([3,3,1,5]).sort()));
+}
+
+function testIntersection() {
+	assertTrue("yields distinct set", [1,2,3,4].equals([2,1,3,1,4,5,6].intersection([1,1,1,2,8,4,3]).sort()));
+}
+
+function testMinus() {
+	assertTrue("minus non-contained, distinct", [1].equals([1,2,3,3].minus([2,3,4])));
+}
+
+function testSymmetricDifference() {
+	assertTrue("distinct", [1,5].equals([1,2,3,4].symmetricDifference([2,3,4,5])));
+}
+
+</script>
+</head>
+<body>
+
+//Array.prototype.containsAll = function() {
+//	Array.from(arguments).every(this.contains, this);
+//};
+//function testContainsAll() {
+//	assertTrue("separate parameters", [9,9,1].containsAll(1,9));
+//	assertTrue("as array", [9,9,1].containsAll([1,9]));
+//}
+
+	<form>
+		<input id="required" name="r" /><input id="other" name="o" />
+	</form>
+</body>
+</html>

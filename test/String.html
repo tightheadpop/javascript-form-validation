@@ -1,0 +1,45 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testTrim() {
+	assertNotUndefined("trim function doesn't exist", "".trim);
+	assertEquals("not removing leading and trailing spaces", "  test me! !  ".trim(), "test me! !");
+	assertEquals("trim removing leading Ss", "stuff to fix".trim(), "stuff to fix");
+}
+
+function testEmpty() {
+	assertEquals("", String.Empty);
+}
+
+function testStartsWith() {
+	assertTrue("startsWith true", "test".startsWith("te"));
+	assertFalse("startsWith false", "test".startsWith("est"));
+}
+
+function testEndsWith() {
+	assertTrue("endsWith true", "test".endsWith("st"));
+	assertFalse("endsWith false", "test".endsWith("s"));
+}
+
+function testContains() {
+	assertTrue("test".contains("te"));
+	assertTrue("test".contains("st"));
+	assertFalse("test".contains("se"));
+}
+
+function testContainsIgnoreCase() {
+	assertTrue("test".containsIgnoreCase("TE"));
+	assertTrue("test".containsIgnoreCase("sT"));
+	assertFalse("test".containsIgnoreCase("SE"));
+}
+
+function testEqualsIgnoreCase() {
+	assertTrue("case-insensitivity", "a simple test".equalsIgnoreCase("A Simple TesT"));
+	assertFalse("null check", "null".equalsIgnoreCase(null));
+}
+</script>
+</head>
+</html>
