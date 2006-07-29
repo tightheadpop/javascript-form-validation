@@ -1,24 +1,28 @@
 /*********************************************************************
-JavaScript 1.2 Validation Script
-	version 3.2.0 beta
-	by matthew frank
+Validation javascript framework, version 4.0.0
 
-There are no warranties expressed or implied.  This script may be
-re-used and distrubted freely provided this header remains intact
-and all supporting files are included (unaltered) in the distribution:
+Copyright (c) 1997-2006 Matthew A. Frank
 
-		validation.js   - this file
-		prototype.js    - prototype library file (1.4.0)
-		validation.htm  - example form
-		readme.htm      - directions on using this script
-		/test/*         - JsUnit automated test stuff
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
-If you are interested in keeping up with the latest releases of this
-script or asking questions about its implementation, think about joining
-the Yahoo! Groups discussion forum dedicated to javascript form validation:
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
-	http://groups.yahoo.com/group/validation
-	
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 This script now depends on Prototype, another javascript library.
 
 	http://prototype.conio.net/
@@ -65,15 +69,17 @@ Object.extend(Object.prototype, {
 	
 });
 Function.Null = function() {};
+Function.create = function(value) {
+	if($V(value)) {
+		if(value.instanceOf(Function))
+			return value;
+		else
+			return new Function(value);
+	} else {
+		return Function.Null;
+	}
+};
 Object.extend(Function.prototype, {
-	create: function(value) {
-		if($V(value)) {
-			if(!value.instanceOf(Function))
-				value = new Function(value);
-		} else
-			value = Function.Null;
-		return value;
-	},
 	then: function(that) {
 		var me = this;
 		return function() { me.apply(this, arguments); Function.create(that).apply(this, arguments); };
