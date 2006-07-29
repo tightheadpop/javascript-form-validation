@@ -1,0 +1,26 @@
+<html>
+<head>
+<script src="settings.js"></script>
+<script type="text/javascript">
+
+function suite() {
+	//path is relative to JsUnit's test runner page
+	var s = new top.jsUnitTestSuite();
+	s.addTestPage(path + "Array.html");
+	s.addTestPage(path + "String.html");
+	s.addTestPage(path + "Number.html");
+	s.addTestPage(path + "Object.html");
+	s.addTestPage(path + "Function.html");
+	s.addTestPage(path + "Validation-Date.html");
+	s.addTestPage(path + "Validation.html");
+	s.addTestPage(path + "Validation-Required.html");
+	s.addTestPage(path + "Validation-Integer.html");
+	s.addTestPage(path + "Element.html");
+	return s;
+}
+
+</script>
+</head>
+<body>
+</body>
+</html>

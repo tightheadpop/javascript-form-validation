@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Validation Demonstration Page</title>
+<style>
+body, table, input, button, select { font-family: verdana, arial, helvetica, sans-serif; font-size: small; }
+body { background-color: white; color: black; }
+input.required {border-right:3px solid red;}
+input[type="text"] {border: 1px dotted black; background-color: #eeeeee; padding-left: 1px; padding-right: 1px;}
+input[type="text"].required {border-right: 3px solid red;}
+input[type="text"]:focus {background-color: white; border: 1px solid black;}
+input[type="text"].required:focus {background-color: white; border-right: 3px solid red}
+input.invalid {background-color: #fcc; border: 1px solid red;}
+.validation-summary {color:black;background-color:#ffffcc;padding:10px;border-top:1px solid gold;border-bottom:1px solid gold;}
+TR TD:first-child { text-align: right; }
+</style>
+<script type="text/javascript" src="prototype.js"></script>
+<script type="text/javascript" src="validation.js"></script>
+<script type="text/javascript">
+	Validation.showPopup = true;
+</script>
+</head>
+
+<body>
+<form onsubmit="alert(this.method);return false" name="oForm" method="post" enctype="multipart/form-data">
+	
+<div class="validation-summary" style="display:none"></div>
+	
+<table>
+<tr>
+	<td>Auto submit</td>
+	<td><select auto-submit="on">
+		<option>No</option>
+		<option>Yes</option>
+		</select></td>
+</tr>
+<tr>
+	<td>Boolean</td>
+	<td><input name="radio" display-name="Radio Button 1" id="radio1" type="radio" value="y" checked="checked"><label for="radio1">AND Integer</label>
+	<br>
+	<input name="radio" display-name="Radio Button 2" id="radio2" type="radio" value="n"><label for="radio2">AND Currency</label></td>
+</tr>
+<tr>
+	<td>Required</td>
+	<td><input type="text" id="required" display-name="Required" required="required" initial-focus="on" /></td>
+</tr>
+<tr>
+	<td>Social Security Number</td>
+	<td><input type="text" display-name="Social Security Number" regexp="^\d{3}-\d{2}-\d{4}$" regexp-message="Please enter a valid Social Security Number." /></td>
+</tr>
+<tr>
+	<td>Integer</td>
+	<td><input type="text" name="integer" display-name="Integer" filter="[0-9]" integer="on" required="@this.form.radio[0].checked" filter="[0-9]" /></td>
+</tr>
+<tr>
+	<td>Float</td>
+	<td><input type="text" name="float" display-name="Float" float="on" ></td>
+</tr>
+<tr>
+	<td>Currency</td>
+	<td><input type="text" name="$" required="@this.form.radio[1].checked" display-name="Currency" signed="on" currency="on" validation-order="1" /></td>
+</tr>
+<tr>
+	<td>Datetime: MM/DD/YYYY HH:NN:SS AM/PM</td>
+	<td><input type="text" name="dtm" display-name="Datetime" datetime="MM/DD/YYYY HH:NN:SS AP" /></td>
+</tr>
+<tr>
+	<td>Phone Number</td>
+	<td><input type="text" name="phone" display-name="Phone Number" phone="on" /></td>
+</tr>
+<tr>
+	<td>Email</td>
+	<td><input type="text" name="email" display-name="Email" email="on"></td>
+</tr>
+<tr>
+	<td>ZIP Code</td>
+	<td><input type="text" display-name="ZIP Code" zip="on"></td>
+</tr>
+<tr>
+	<td>Regular Expression: /^\d{3}-\d{2}-\d{4}$/</td>
+	<td><input type="text" display-name="Regular Expression" regexp="^\d{3}-\d{2}-\d{4}$" /></td>
+</tr>
+<tr>
+	<td>Start Time</td>
+	<td><input type="text" display-name="Start Time" datetime="HH:NN AP" id="startTime" /></td>
+</tr>
+<tr>
+	<td>End Time (>= Start Time)</td>
+	<td><input type="text" display-name="End Time" datetime="HH:NN AP" min="@$('startTime').value" /></td>
+</tr>
+<tr>
+	<td>Integer filter within fieldset</td>
+	<td><fieldset>
+		<input type="text" display-name="Integer filter within fieldset" integer="true" filter="[0-9]"/>
+	</fieldset></td>
+</tr>
+<tr>
+	<td>File Upload</td>
+	<td><input type="file" name="fileUpload" /></td>
+</tr>
+</table>
+<input type="submit" /><input type="reset" />
+</form>
+</body>
+</html>
