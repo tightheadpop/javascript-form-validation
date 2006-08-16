@@ -14,6 +14,7 @@ function testIsRequired() {
 }
 
 function testRequiredValidationIsTriggeredWhenValueIsNotProvided() {
+	$('r').value = String.Empty;
 	Form.validateAndSubmit($('master'));
 	assertFalse("required field should be invalid with no value", $('master').isValid);
 }

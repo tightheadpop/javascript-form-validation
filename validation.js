@@ -65,7 +65,7 @@ Object.extend(Object.prototype, {
 	},
 	notWithin: function(list) {
 		return !this.within(list);
-	},
+	}
 	
 });
 Function.Null = function() {};
@@ -308,8 +308,8 @@ Object.extend(Form, {
 			return false;
 		return form.isValid;
 	},
-	markRequired: function(){
-		$A(this.elements).forEach(Form.Element.markRequired);
+	markRequired: function(form){
+		$A(form.elements).forEach(Form.Element.markRequired);
 	},
 	validate: function(form, oEvent){
 		form.isValid = Form.isValid(form, oEvent);
@@ -325,7 +325,7 @@ Object.extend(Form, {
 	resetValidation: function(form){
 		Form.restore(form, true);
 		Validation.Err.renderSummary(form);
-	},
+	}
 
 });
 
@@ -511,7 +511,7 @@ Object.extend(Form.Element, {
 		element = $(element);
 		element.isValid = Form.Element.isValid(element, oEvent);
 		return element.isValid;
-	},
+	}
 
 });
 
@@ -820,5 +820,5 @@ if(!!window.RegExp
 	&& !!document.forms 
 	&& !( navigator.appVersion.contains('Mac') && navigator.appVersion.contains('MSIE') )
 ) {
-	window.onload = Event.observe(window, 'load', Validation.setup);
+	Event.observe(window, 'load', Validation.setup);
 }
