@@ -335,7 +335,7 @@ Object.extend(Form.Element, {
 	},
 	restore: function(element){
 		element = $(element);
-		element.__validated = null;
+		element.__validated = false;
 		element.isValid = true;
 		Validation.Err.unregisterMessage(element);
 		Element.removeClassName(element, Validation.invalidClassName);
@@ -359,13 +359,13 @@ Object.extend(Form.Element, {
 		iMin = $P(element, 'MIN');
 		iMax = $P(element, 'MAX');
 		var pass=true;
-		if(element.value && element.type != 'file')
+		if(element.value && !/file|select/.test(element.type))
 			element.value = element.value.trim();
 		var sValue = $F(element);
 		var bSigned = $P(element, 'SIGNED');
 		
 		// REQUIRED
-		if(Validation.isRequired(element) && !sValue){
+		if(Validation.isRequired(element) && !(sValue && sValue.first ? sValue.first() : sValue)){
 			Validation.Err.raise(element, "Please enter a value", 'REQUIRED', event);
 	 		return false;
 		}

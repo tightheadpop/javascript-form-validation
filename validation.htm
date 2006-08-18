@@ -13,6 +13,7 @@ input[type="text"].required:focus {background-color: white; border-right: 3px so
 input.invalid {background-color: #fcc; border: 1px solid red;}
 .validation-summary {color:black;background-color:#ffffcc;padding:10px;border-top:1px solid gold;border-bottom:1px solid gold;}
 TR TD:first-child { text-align: right; }
+a { color: blue }
 </style>
 <script type="text/javascript" src="prototype.js"></script>
 <script type="text/javascript" src="validation.js"></script>
@@ -29,7 +30,7 @@ TR TD:first-child { text-align: right; }
 <table>
 <tr>
 	<td>Auto submit</td>
-	<td><select auto-submit="on">
+	<td><select auto-submit="true">
 		<option>No</option>
 		<option>Yes</option>
 		</select></td>
@@ -97,6 +98,20 @@ TR TD:first-child { text-align: right; }
 <tr>
 	<td>File Upload</td>
 	<td><input type="file" name="fileUpload" /></td>
+</tr>
+<tr>
+	<td>Multi-select</td>
+	<td>
+		<select id="multiSelect" multiple="multiple" required="true" display-name="Multi-select">
+			<option value="1">One</option>
+			<option value="2">Two</option>
+			<option value="3">Three</option>
+			<option value="4">Four</option>
+			<option value="5">Five</option>
+			<option value="6">Six</option>
+			<option value="7">Seven</option>
+		</select>
+	</td>
 </tr>
 </table>
 <input type="submit" /><input type="reset" />
