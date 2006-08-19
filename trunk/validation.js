@@ -92,6 +92,17 @@ Object.extend(Function.prototype, {
 		$A(arguments).forEach(this);
 	}
 });
+Object.extend(String, {
+	Empty: "",
+	format: function() {
+		var tokens = $A(arguments);
+		var result = tokens.shift();
+		tokens.each(function(token, index) {
+			result = result.replace(new RegExp("\\{" + index + "\\}", "g"), token);
+		});
+		return result;
+	}
+});
 String.Empty = '';
 Object.extend(String.prototype, {
 	trim: function() {
@@ -717,8 +728,9 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 var $ON = Element.propertyOn;
 Validation.Err = {
 	raise: function(element, message, stem, event){
-		if(typeof event!='object') event = new Object();
-		if(event.type!='change'){
+		if(event == null || typeof event != 'object')
+			event = { type: 'sham' };
+		if(event.type != 'change'){
 	 		var displayName = $P(element, 'DISPLAY-NAME');
 			message = [
 				(stem ? $P(element, stem.toUpperCase()+'-MESSAGE') : null),
