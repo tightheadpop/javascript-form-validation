@@ -269,12 +269,12 @@ Object.extend(Element, {
 	}
 });
 var $P = Element.getProperty;
-/******************************************/
+
 Object.extend(Form, {
 	restore: function(form, reset){
 		form = $(form);
 		form.isValid = true;
-		Validation.Err.clearMessages(form);
+		Validation.clearMessages(form);
 		for(var i = 0;i < form.elements.length; i++){
 			Form.Element.restore(form.elements[i]);
 			if(reset)form.elements[i].onreset();
@@ -312,7 +312,7 @@ Object.extend(Form, {
 	},
 	validate: function(form, oEvent){
 		form.isValid = Form.isValid(form, oEvent);
-		Validation.Err.displayMessages(form);
+		Validation.displayMessages(form);
 		return form.isValid;
 	},
 	validateAndSubmit: function(form) {
@@ -323,9 +323,8 @@ Object.extend(Form, {
 	},
 	resetValidation: function(form){
 		Form.restore(form, true);
-		Validation.Err.renderSummary(form);
+		Validation.renderSummary(form);
 	}
-
 });
 
 Object.extend(Form.Element, {
@@ -336,7 +335,7 @@ Object.extend(Form.Element, {
 		element = $(element);
 		element.__validated = false;
 		element.isValid = true;
-		Validation.Err.unregisterMessage(element);
+		Validation.unregisterMessage(element);
 		Element.removeClassName(element, Validation.invalidClassName);
 	},
 	markRequired: function(element){
@@ -371,7 +370,7 @@ Object.extend(Form.Element, {
 		
 		// REQUIRED
 		if(Validation.isRequired(element) && !(sValue && sValue.first ? sValue.first() : sValue)){
-			Validation.Err.raise(element, "Please enter a value", 'REQUIRED', event);
+			Validation.fail(element, "Please enter a value", 'REQUIRED', event);
 	 		return false;
 		}
 		// FLOAT, NUMBER
@@ -383,7 +382,7 @@ Object.extend(Form.Element, {
 			else if(iMax==parseFloat(iMax) && parseFloat(sValue.replace(/,/g, String.Empty)) > parseFloat(iMax))
 				pass=false;
 			if(!pass){
-				Validation.Err.raise(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"number"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'FLOAT':'NUMBER',event);
+				Validation.fail(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"number"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'FLOAT':'NUMBER',event);
 				return false;
 			}
 		}
@@ -396,7 +395,7 @@ Object.extend(Form.Element, {
 			else if(iMax==parseFloat(iMax) && parseFloat(sValue.replace(/[\$,]/g,String.Empty).replace(/^\(\$(.*)\)$/,"-$1"))>parseFloat(iMax))
 				pass=false;
 			if(!pass){
-				Validation.Err.raise(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"dollar amount"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'AMOUNT':'CURRENCY',event);
+				Validation.fail(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"dollar amount"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'AMOUNT':'CURRENCY',event);
 				return false;
 			}
 		}
@@ -409,7 +408,7 @@ Object.extend(Form.Element, {
 			else if(iMax==parseInt(iMax) && parseInt(sValue.replace(/,/g,String.Empty))>parseInt(iMax))
 				pass=false;
 			if(!pass){
-				Validation.Err.raise(element, "Please enter a "+(bSigned?"n ":"positive ")+"integer"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),'INTEGER',event);
+				Validation.fail(element, "Please enter a "+(bSigned?"n ":"positive ")+"integer"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),'INTEGER',event);
 				return false;
 			}
 		}
@@ -428,7 +427,7 @@ Object.extend(Form.Element, {
 			else if($ON(iMax) && Object.isDefined(maxDate) && date > maxDate)
 				pass = false;
 			if(!pass){
-				Validation.Err.raise(element,"Please enter a "+this.dateOrTime(format)+" value"+this.minMaxRange(iMin,iMax)+" in the proper format: "+format.replace(/ap/i,'AM/PM').toUpperCase(),bFirst?'DATE':'DATETIME',event);
+				Validation.fail(element,"Please enter a "+this.dateOrTime(format)+" value"+this.minMaxRange(iMin,iMax)+" in the proper format: "+format.replace(/ap/i,'AM/PM').toUpperCase(),bFirst?'DATE':'DATETIME',event);
 				return false;
 			}
 		}
@@ -437,21 +436,21 @@ Object.extend(Form.Element, {
 			var sPhone=sValue.replace(/\D/g,String.Empty);
 			var iDigits=sPhone.length;
 			if(!(iDigits==10||iDigits==11&&/^1/.test(sPhone))){
-				Validation.Err.raise(element,"Please enter a valid phone number",'PHONE',event);
+				Validation.fail(element,"Please enter a valid phone number",'PHONE',event);
 				return false;
 			}
 		}
 		// EMAIL
 		else if($ON($P(element, 'EMAIL'))&&sValue){
 			if(!/^[\w_-]+(\.[\w_-]+)*@[\w_-]+(\.[\w_-]+)*\.[a-z]{2,4}$/i.test(sValue)){
-				Validation.Err.raise(element,"Please enter a valid email address", 'EMAIL', event);
+				Validation.fail(element,"Please enter a valid email address", 'EMAIL', event);
 				return false;
 			}
 		}
 		// ZIP Code
 		else if ($ON($P(element, 'ZIP')) && sValue){
 			if (!/^\d{5}(-?\d{4})?$/.test(sValue)){
-				Validation.Err.raise(element, "Please enter a valid ZIP code", 'ZIP', event);
+				Validation.fail(element, "Please enter a valid ZIP code", 'ZIP', event);
 				return false;
 			}
 		}
@@ -460,13 +459,13 @@ Object.extend(Form.Element, {
 			if (!oRegExp.isRegExp)
 				oRegexp = new RegExp(oRegexp, 'i');
 			if (!oRegexp.test(sValue)){
-				Validation.Err.raise(element, "Please enter a valid value", 'REGEXP', event);
+				Validation.fail(element, "Please enter a valid value", 'REGEXP', event);
 				return false;
 			}
 		}
 		// MAXLENGTH
 		if (sValue&&(iLength=$P(element, 'maxLength'))&&!/\D/.test(iLength)&&sValue.length>iLength){
-			Validation.Err.raise(element,"Please enter a value having no more than " + Number.format(iLength) + " characters", 'MAXLENGTH',event);
+			Validation.fail(element,"Please enter a value having no more than " + Number.format(iLength) + " characters", 'MAXLENGTH',event);
 			return false;
 		}
 		for(var i=0;Validation._validationFunctions[i];i++){
@@ -479,7 +478,7 @@ Object.extend(Form.Element, {
 			for(var oNewElement,i=0,iFields=vAnd.length; i<iFields; i++){
 				if((oNewElement=(typeof vAnd[i].form=='object')?vAnd[i]:element.form.elements[vAnd[i].trim()])){
 					if(!!$F(oNewElement)){
-						Validation.Err.raise(element, "Please enter a value", 'AND',event);
+						Validation.fail(element, "Please enter a value", 'AND',event);
 						return false;
 					}
 				}
@@ -500,7 +499,7 @@ Object.extend(Form.Element, {
 					if(oNewElement) bValue = !!$F(oNewElement);
 				}
 				if(!bValue){
-					Validation.Err.raise(element, message ? message : "Please enter a value", 'OR', event);
+					Validation.fail(element, message ? message : "Please enter a value", 'OR', event);
 					return false;
 				}
 			}
@@ -712,11 +711,8 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 			Form.markRequired(form);
 			setInterval(Form.markRequired.bind({},form), Validation.markRequiredInterval);
 		}
-	}
-};
-var $ON = Element.propertyOn;
-Validation.Err = {
-	raise: function(element, message, stem, event){
+	},
+	fail: function(element, message, stem, event){
 		if(event == null || typeof event != 'object')
 			event = { type: 'sham' };
 		if(event.type != 'change'){
@@ -726,37 +722,37 @@ Validation.Err = {
 				$P(element, 'MESSAGE'),
 				message].choose();
 			var extendedMessage = message.replace(/\.$/, String.Empty)
-				+ (!!displayName ? " in the " + displayName + " field." : ".");
-			this.registerMessage(element, extendedMessage);
+				+ (!!displayName ? " in the {0} field.".format(displayName) : ".");
+			this._registerMessage(element, extendedMessage);
 		}
 		Form.Element.markInvalid(element, message);
 	},
 	displayMessages: function (form) {
 		if (Validation.showPopup)
-			this.displayPopup(form);
+			this._displayPopup(form);
 		if (Validation.showSummary)
 			this.renderSummary(form);
 	},
-	displayPopup: function (form) {
-		if (!this.hasMessages(form)) return;
-		var message = Validation.summaryIntroduction;
-		var map = this.getIndexMap(form);
-		var fieldMessages = this.getMessageMap(form);
+	_displayPopup: function (form) {
+		if (!this._hasMessages(form)) return;
+		var message = this.summaryIntroduction;
+		var map = this._getIndexMap(form);
+		var fieldMessages = this._getMessageMap(form);
 		for(var i = 0; i < map.length; i++)
 			message += "\n  - " + fieldMessages[map[i]];
 		window.alert(message);
 	},
 	renderSummary: function (form) {
-		var summary = this.getValidationSummary(form);
+		var summary = this._getValidationSummary(form);
 		if (!summary) return;
 		Element.hide(summary);
 		var elementId, list, listItem, link;
-		var map = this.getIndexMap(form);
+		var map = this._getIndexMap(form);
 		var fieldMessages;
-		if (this.hasMessages(form)) {
-			fieldMessages = this.getMessageMap(form);
+		if (this._hasMessages(form)) {
+			fieldMessages = this._getMessageMap(form);
 			Element.update(summary, String.Empty);
-			summary.appendChild(document.createTextNode(Validation.summaryIntroduction));
+			summary.appendChild(document.createTextNode(this.summaryIntroduction));
 			list = document.createElement('UL');
 			summary.appendChild(list);
 			for(var i = 0; i < map.length; i++) {
@@ -772,48 +768,49 @@ Validation.Err = {
 			Element.scrollTo(summary);
 		}
 	},
-	hasMessages: function (form) {
-		return this.getIndexMap(form).length > 0;
+	_hasMessages: function (form) {
+		return this._getIndexMap(form).length > 0;
 	},
-	messageMap: [],
-	indexMap: [],
-	getMessageMap: function (form) {
+	_messageMap: [],
+	_indexMap: [],
+	_getMessageMap: function (form) {
 		var id = Element.idFor(form);
-		if (!this.messageMap[id])
-			this.messageMap[id] = [];
-		return this.messageMap[id];
+		if (!this._messageMap[id])
+			this._messageMap[id] = [];
+		return this._messageMap[id];
 	},
-	getIndexMap: function (form) {
+	_getIndexMap: function (form) {
 		var id = Element.idFor(form);
-		if (!this.indexMap[id])
-			this.indexMap[id] = [];
-		return this.indexMap[id]
+		if (!this._indexMap[id])
+			this._indexMap[id] = [];
+		return this._indexMap[id]
 	},
-	registerMessage: function (element, message) {
+	_registerMessage: function (element, message) {
 		var id = Element.idFor(element);
-		this.getMessageMap(element.form)[id] = message;
-		this.getIndexMap(element.form).push(id);
+		this._getMessageMap(element.form)[id] = message;
+		this._getIndexMap(element.form).push(id);
 	},
-	getValidationSummary: function (form) {
+	_getValidationSummary: function (form) {
 		var divs = form.getElementsByTagName('DIV');
 		for (var i = 0; i < divs.length; i++) {
-			if (Element.hasClassName(divs[i], Validation.summaryClassName))
+			if (Element.hasClassName(divs[i], this.summaryClassName))
 				return divs[i];
 		}
 		return null;
 	},
 	unregisterMessage: function (element) {
 		var elementId = Element.idFor(element);
-		delete this.getMessageMap(element.form)[elementId];
-		delete this.getIndexMap(element.form)[elementId];
-		this.indexMap = this.indexMap.compact();
+		delete this._getMessageMap(element.form)[elementId];
+		delete this._getIndexMap(element.form)[elementId];
+		this._indexMap = this._indexMap.compact();
 	},
 	clearMessages: function (form) {
 		var id = Element.idFor(form);
-		this.messageMap[id] = [];
-		this.indexMap[id] = [];
+		this._messageMap[id] = [];
+		this._indexMap[id] = [];
 	}
 };
+var $ON = Element.propertyOn;
 
 if(!!window.RegExp 
 	&& !!String.Empty.replace 
