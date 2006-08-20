@@ -345,6 +345,12 @@ Object.extend(Form.Element, {
 		else
 			Element.removeClassName(element, 'required');
 	},
+	validateFocus: function(element) {
+		element = $(element);
+		Element.getHandler(element, 'onvalidatefocus')();
+		if (element.focus) element.focus();
+		if (element.select) element.select();
+	},
 	isValid: function(element, event){
 		// Do not validate label or fieldset elements
 		if(!Object.isDefined(element.type)||element.__validated||$ON($P(element, 'disabled'))||$ON($P(element, 'readOnly')))
@@ -656,11 +662,6 @@ var Validation = {
 					}
 					element._onkeypress_ = Element.getHandler(element, 'onkeypress');
 					element._onchange_ = Element.getHandler(element, 'onchange');
-					element.validateFocus = function() {
-						Element.getHandler(element, 'onvalidatefocus')();
-						if (this.focus) this.focus();
-						if (this.select) this.select();
-					};
 					element.isValid = true;
 					element.onbeforevalidate = Element.getHandler(element, 'onbeforevalidate');
 					element.onvalidate = Element.getHandler(element, 'onvalidate');
@@ -762,7 +763,7 @@ Validation.Err = {
 				elementId = map[i];
 				listItem = document.createElement('LI');
 				link = document.createElement('A');
-				link.setAttribute('href', "javascript:$('"+elementId+"').validateFocus();");
+				link.setAttribute('href', "javascript:Form.Element.validateFocus('{0}');".format(elementId));
 				link.appendChild(document.createTextNode(fieldMessages[elementId]));
 				listItem.appendChild(link);
 				list.appendChild(listItem);
