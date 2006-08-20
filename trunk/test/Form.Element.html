@@ -4,18 +4,175 @@
 	
 <script type="text/javascript">
 
+function setUp() {
+	$('master').reset();
+}
+
 function testValidateFocus() {
 	var handlerInvoked = false;
 	var focused = false;
 	var selected = false;
-	$('r').onvalidatefocus = function() { handlerInvoked = true; };
-	$('r').focus = function() { focused = true; };
-	$('r').select = function() { selected = true; };
-	Form.Element.validateFocus('r');
+	//possibly side-effecty
+	$('required').onvalidatefocus = function() { handlerInvoked = true; };
+	$('required').focus = function() { focused = true; };
+	$('required').select = function() { selected = true; };
+
+	Form.Element.validateFocus('required');
 	
 	assertTrue("onvalidate handler should be invoked", handlerInvoked);
 	assertTrue("focus should be invoked", focused);
 	assertTrue("select should be invoked", selected);
+}
+
+function testNumericFieldWithNonNumericValueIsNotValid() {
+	$('number').value = 'foo';
+	assertFalse(Form.Element.validate('number'));
+}
+
+function testNumericFieldWithNumericValueIsValid() {
+	assertTrue(Form.Element.validate('number'));
+	$('number').value = '4.5';
+	assertTrue(Form.Element.validate('number'));
+}
+
+function testFieldWithNoValidationIsValid() {
+	assertTrue(Form.Element.validate('a'));
+}
+
+function testCurrencyFieldIsValidWithNoInput() {
+	assertTrue(Form.Element.validate('currency'));
+}
+
+function testValidCurencyInput() {
+	$('currency').value = '($4.55)';
+	assertTrue(Form.Element.validate('currency'));
+}
+
+function testInvalidCurrencyInput() {
+	$('currency').value = 'foo';
+	assertFalse(Form.Element.validate('currency'));
+}
+
+function testIntegerFieldWithoutValueIsValid() {
+	assertTrue(Form.Element.validate('integer'));
+}
+
+function testValidIntegerInput() {
+	$('integer').value = '599';
+	assertTrue(Form.Element.validate('integer'));
+}
+
+function testInvalidIntegerInput() {
+	$('integer').value = '5.6';
+	assertFalse(Form.Element.validate('integer'));
+}
+
+function testDateFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('date'));
+}
+
+function testValidDateInput() {
+	$('date').value = '5/16/2000';
+	assertTrue(Form.Element.validate('date'));
+}
+
+function testInvalidDateInput() {
+	$('date').value = '16/5/2000';
+	assertFalse(Form.Element.validate('date'));
+}
+
+function testPhoneFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('phone'));
+}
+
+function testValidPhoneInput() {
+	$('phone').value = '555.555.5555';
+	assertTrue(Form.Element.validate('phone'));
+}
+
+function testInvalidPhoneInput() {
+	$('phone').value = '800.eat.fish';
+	assertFalse(Form.Element.validate('phone'));
+}
+
+function testEmailFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('email'));
+}
+
+function testValidEmailInput() {
+	$('email').value = 'bob@rob.ru';
+	assertTrue(Form.Element.validate('email'));
+}
+
+function testInvalidEmailInput() {
+	$('email').value = 'bob';
+	assertFalse(Form.Element.validate('email'));
+}
+
+function testZipFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('zip'));
+}
+
+function testValidZipInput() {
+	$('zip').value = '12345';
+	assertTrue(Form.Element.validate('zip'));
+}
+
+function testInvalidZipInput() {
+	$('zip').value = '1234';
+	assertFalse(Form.Element.validate('zip'));
+}
+
+function testRegexFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('regex'));
+}
+
+function testValidRegexInput() {
+	$('regex').value = '111-11-1111';
+	assertTrue(Form.Element.validate('regex'));
+}
+
+function testInvalidRegexInput() {
+	$('regex').value = 'foo';
+	assertFalse(Form.Element.validate('regex'));
+}
+
+function testMaxlengthFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('maxlength'));
+}
+
+function testValidMaxlengthInput() {
+	$('maxlength').value = '123';
+	assertTrue(Form.Element.validate('maxlength'));
+}
+
+function testInvalidMaxlengthInput() {
+	$('maxlength').value = '1234';
+	assertFalse(Form.Element.validate('maxlength'));
+}
+
+function testAndFieldWithNoInputIsValid() {
+	assertTrue(Form.Element.validate('and1'));
+}
+
+function testValidAndInput() {
+	$('and1').value = 'foo';
+	$('and2').value = 'bar';
+	assertTrue(Form.Element.validate('and1'));
+}
+
+function testInvalidAndInput() {
+	$('and2').value = 'bar';
+	assertFalse(Form.Element.validate('and1'));
+}
+
+function testValidOrInput() {
+	$('or2').value = 'foo';
+	assertTrue(Form.Element.validate('or1'));
+}
+
+function testInvalidOrInput() {
+	assertFalse(Form.Element.validate('or1'));
 }
 
 </script>
@@ -23,8 +180,23 @@ function testValidateFocus() {
 <body>
 	<form id="master" onsubmit="return false;">
 		<div class="validation-summary"></div>
-		<input required="required" id="r" />
+		<input required="required" id="required" />
 		<input id="a" />
+		<input id="number" number="number" />
+		<input id="integer" integer="integer" />
+		<input id="date" date="m/d/yyyy" />
+		<input id="phone" phone="true" />
+		<input id="email" email="true" />
+		<input id="zip" zip="true" />
+		<textarea id="maxlength" maxlength="3"></textarea>
+		<input id="regex" regexp="^\d{3}-\d{2}-\d{4}$" />
+		<input id="currency" currency="currency" signed="signed" />
+		
+		<input id="and1" and="and2" />
+		<input id="and2" />
+		
+		<input id="or1" or="or2" />
+		<input id="or2" />
 		
 		<button type="submit">go</button>
 	</form>

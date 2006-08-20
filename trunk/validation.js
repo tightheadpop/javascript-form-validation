@@ -382,7 +382,10 @@ Object.extend(Form.Element, {
 			else if(iMax==parseFloat(iMax) && parseFloat(sValue.replace(/,/g, String.Empty)) > parseFloat(iMax))
 				pass=false;
 			if(!pass){
-				Validation.fail(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"number"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'FLOAT':'NUMBER',event);
+				Validation.fail(element, "Please enter a {0}number{1}".format(
+					bSigned ? String.Empty : "positive ", 
+					Validation.minMaxRange(Number.format(iMin), Number.format(iMax)))
+					,bFirst?'FLOAT':'NUMBER',event);
 				return false;
 			}
 		}
@@ -395,7 +398,7 @@ Object.extend(Form.Element, {
 			else if(iMax==parseFloat(iMax) && parseFloat(sValue.replace(/[\$,]/g,String.Empty).replace(/^\(\$(.*)\)$/,"-$1"))>parseFloat(iMax))
 				pass=false;
 			if(!pass){
-				Validation.fail(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"dollar amount"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'AMOUNT':'CURRENCY',event);
+				Validation.fail(element, "Please enter a "+(bSigned?String.Empty:"positive ")+"dollar amount"+Validation.minMaxRange(Number.format(iMin),Number.format(iMax)),bFirst?'AMOUNT':'CURRENCY',event);
 				return false;
 			}
 		}
@@ -408,7 +411,7 @@ Object.extend(Form.Element, {
 			else if(iMax==parseInt(iMax) && parseInt(sValue.replace(/,/g,String.Empty))>parseInt(iMax))
 				pass=false;
 			if(!pass){
-				Validation.fail(element, "Please enter a "+(bSigned?"n ":"positive ")+"integer"+this.minMaxRange(Number.format(iMin),Number.format(iMax)),'INTEGER',event);
+				Validation.fail(element, "Please enter a "+(bSigned?"n ":"positive ")+"integer"+Validation.minMaxRange(Number.format(iMin),Number.format(iMax)),'INTEGER',event);
 				return false;
 			}
 		}
@@ -417,9 +420,9 @@ Object.extend(Form.Element, {
 			// Set default date format
 			if(format == String.Empty || typeof format != 'string')
 				format = this.defaultDateFormat;
-			minDate = this.toDateString(iMin, format);
-			maxDate = this.toDateString(iMax, format);
-			date = this.toDateString(sValue, format);
+			minDate = Validation.toDateString(iMin, format);
+			maxDate = Validation.toDateString(iMax, format);
+			date = Validation.toDateString(sValue, format);
 			if(!Object.isDefined(date))
 				pass = false;
 			else if($ON(iMin) && Object.isDefined(minDate) && date < minDate)
@@ -427,7 +430,7 @@ Object.extend(Form.Element, {
 			else if($ON(iMax) && Object.isDefined(maxDate) && date > maxDate)
 				pass = false;
 			if(!pass){
-				Validation.fail(element,"Please enter a "+this.dateOrTime(format)+" value"+this.minMaxRange(iMin,iMax)+" in the proper format: "+format.replace(/ap/i,'AM/PM').toUpperCase(),bFirst?'DATE':'DATETIME',event);
+				Validation.fail(element,"Please enter a "+Validation.dateOrTime(format)+" value"+Validation.minMaxRange(iMin,iMax)+" in the proper format: "+format.replace(/ap/i,'AM/PM').toUpperCase(),bFirst?'DATE':'DATETIME',event);
 				return false;
 			}
 		}
@@ -456,7 +459,7 @@ Object.extend(Form.Element, {
 		}
 		// REGEXP
 		if ($ON(oRegexp=$P(element, 'REGEXP')) && sValue){
-			if (!oRegExp.isRegExp)
+			if (!oRegexp.isRegExp)
 				oRegexp = new RegExp(oRegexp, 'i');
 			if (!oRegexp.test(sValue)){
 				Validation.fail(element, "Please enter a valid value", 'REGEXP', event);

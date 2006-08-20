@@ -3,6 +3,9 @@
 	<script src="settings.js"></script>
 	
 <script type="text/javascript">
+function setUp() {
+	$('form').reset();
+}
 
 function testValidationInstance() {
 	assertNotUndefined(Validation);
@@ -41,7 +44,7 @@ function testMarkRequired() {
 </script>
 </head>
 <body>
-	<form>
+	<form id="form">
 		<input required="required" id="r" />
 		<input id="a" />
 	</form>
