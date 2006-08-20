@@ -44,6 +44,7 @@ function testEqualsIgnoreCase() {
 function testFormat() {
 	assertEquals("test this", String.format("{0} {1}", "test", "this"));
 	assertEquals("test this test {2}", String.format("{1} {0} {1} {2}", "this", "test"));
+	assertEquals("test this test {2}", "{1} {0} {1} {2}".format("this", "test"));
 }
 </script>
 </head>
