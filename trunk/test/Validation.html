@@ -5,7 +5,7 @@
 <script type="text/javascript">
 
 function testValidationInstance() {
-	assertFalse("Validation should be an object, not a function", Validation.instanceOf(Function));
+	assertNotUndefined(Validation);
 }
 
 function testIsFloat() {

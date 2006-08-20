@@ -35,43 +35,26 @@ Object.extend(Object, {
 	hasValue: function(thing) {
 		return Object.isDefined(thing) && thing !== null;
 	},
-	instanceOf: function (thing, conztructor) {
-		return conztructor.prototype.isPrototypeOf(thing);
-	},
 	$get: function(thing, propertyName) {
 		var returnValue;
 		returnValue = thing[propertyName];
 		if(!Object.isDefined(returnValue) && thing.getAttribute)
 			returnValue=thing.getAttribute(propertyName);
 
-		if($V(returnValue) && returnValue.instanceOf(String) && returnValue.startsWith('@'))
+		if($V(returnValue) && returnValue.isString && returnValue.startsWith('@'))
 			returnValue = Function.create("return (" + returnValue.replace(/^@/, String.Empty) + ")").apply(thing, []);
 		return returnValue;
+	},
+	$set: function(thing, propertyName, value) {
+		thing[propertyName] = value;
 	}
 });
 var $V = Object.hasValue;
-Object.extend(Object.prototype, {
-	instanceOf: function(conztructor) {
-		return Object.instanceOf.apply(this, [this, conztructor]);
-	},
-	$get: function (propertyName) {
-		return Object.$get(this, propertyName);
-	},
-	$set: function(propertyName, value) {
-		this[propertyName] = value;
-	},
-	within: function(list) {
-		return $A(list).contains(this);
-	},
-	notWithin: function(list) {
-		return !this.within(list);
-	}
-	
-});
+
 Function.Null = function() {};
 Function.create = function(value) {
 	if($V(value)) {
-		if(value.instanceOf(Function))
+		if(value.isFunction)
 			return value;
 		else
 			return new Function(value);
@@ -90,7 +73,8 @@ Object.extend(Function.prototype, {
 	},
 	forEach: function() {
 		$A(arguments).forEach(this);
-	}
+	},
+	isFunction: true
 });
 Object.extend(String, {
 	Empty: "",
@@ -103,7 +87,6 @@ Object.extend(String, {
 		return result;
 	}
 });
-String.Empty = '';
 Object.extend(String.prototype, {
 	trim: function() {
 		return this.replace(/^\s+|\s+$/g, String.Empty);
@@ -121,11 +104,16 @@ Object.extend(String.prototype, {
 		return this.toUpperCase().indexOf(substring$.toUpperCase()) > -1;
 	},
 	equalsIgnoreCase: function(that) {
-		if ($V(that) && that.instanceOf(String))
+		if ($V(that) && that.isString)
 			return this.toLowerCase() == that.toLowerCase();
 		return false;
-	}
+	},
+	format: function() {
+		return String.format.apply({}, [this].concat($A(arguments)));
+	},
+	isString: true
 });
+RegExp.prototype.isRegExp = true;
 Object.extend(Number.prototype, {
 	isEven: function() { return Math.abs(this % 2) === 0; },
 	isOdd: function() { return Math.abs(this % 2) === 1; }
@@ -250,7 +238,7 @@ Object.extend(Element, {
 	},
 	getProperty: function(element, propertyName){
 		var result = Object.$get($(element), propertyName);
-		if ($V(result) && result.instanceOf(Function))
+		if ($V(result) && result.isFunction)
 			result = result.apply(element, [element]);
 		return result;
 	},
@@ -361,7 +349,7 @@ Object.extend(Form.Element, {
 		// Do not validate label or fieldset elements
 		if(!Object.isDefined(element.type)||element.__validated||$ON($P(element, 'disabled'))||$ON($P(element, 'readOnly')))
 			return true;
-		if(element.type.within(['button','submit','reset']))
+		if(['button','submit','reset'].contains(element.type))
 			return true;
 		element.__validated = true;
 		if(element.onbeforevalidate()==false)
@@ -463,7 +451,7 @@ Object.extend(Form.Element, {
 		}
 		// REGEXP
 		if ($ON(oRegexp=$P(element, 'REGEXP')) && sValue){
-			if (!oRegexp.instanceOf(RegExp))
+			if (!oRegExp.isRegExp)
 				oRegexp = new RegExp(oRegexp, 'i');
 			if (!oRegexp.test(sValue)){
 				Validation.Err.raise(element, "Please enter a valid value", 'REGEXP', event);
@@ -563,11 +551,11 @@ var Validation = {
 		time = format.search(/hh?/i)>-1 || format.search(/nn/i)>-1 || format.search(/ss/i)>-1 || format.search(/ap/i)>-1;
 		return (date?"date":String.Empty)+(time?"time":String.Empty);
 	},
-	toDateString: function(date, format){
+	toDateString: function(date, dateFormat){
 		var i, regex, index=[];
 		var day, month, year, hour, minute, second, ampm;
 		// Determine order of datetime tokens
-		with(format){
+		with(dateFormat){
 			index[search(/dd?/i)]='day';
 			index[search(/mm?/i)]='month';
 			index[search(/yyyy/i)]='year';
@@ -577,7 +565,7 @@ var Validation = {
 			index[search(/ap/i)]='ampm';
 
 			// timing of replaces is quite important!
-			regex=format.replace(/(\$|\^|\*|\(|\)|\+|\.|\?|\\|\{|\}|\||\[|\])/g,"\\$1");
+			regex=dateFormat.replace(/(\$|\^|\*|\(|\)|\+|\.|\?|\\|\{|\}|\||\[|\])/g,"\\$1");
 			// only allow one pass for day and month
 			if(search(/dd/i)>-1)
 				regex=regex.replace(/dd/i,"(0[1-9]|[1-2]\\d|3[0-1])");
@@ -685,7 +673,7 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 							if(this._onkeypress_(oEvent)==false) return false;
 							var filter = $P(this, 'FILTER');
 							if ($ON(filter)){
-								if (!filter.instanceOf(RegExp))
+								if (!filter.isRegExp)
 									filter = new RegExp(filter);
 								oEvent = oEvent || window.event;
 								
@@ -695,7 +683,7 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 								else
 									keyCode = oEvent.keyCode;
 
-								if(keyCode.notWithin([keyNull, keyTab, keyEnter, keyNewLine, keyBackspace, keyDelete, keyEscape])
+								if(![keyNull, keyTab, keyEnter, keyNewLine, keyBackspace, keyDelete, keyEscape].contains(keyCode)
 										&& !filter.test(String.fromCharCode(keyCode)))
 									return false;
 							}

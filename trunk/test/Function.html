@@ -14,8 +14,8 @@ function setUp() {
 }
 
 function testNull() {
-	assertTrue(Function.Null.instanceOf(Function));
 	assertUndefined(Function.Null());
+	assertTrue(Function.Null.isFunction);
 }
 
 function testCreate() {

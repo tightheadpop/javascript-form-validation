@@ -9,24 +9,19 @@ var NULL = null;
 var UNDEF = Function.Null();
 
 function testObject$Get() {
-	assertNotUndefined("$get is defined", thing.$get);
-	assertEquals("$get numeric", 1, thing.$get("a"));
-	assertEquals("$get string", "2", thing.$get("b"));
-	assertEquals("$get function", "function", typeof thing.$get("c"));
-	assertEquals("$get closure", "21", thing.$get("d"));
-	assertEquals("$get null", null, thing.$get("e"));
-	assertUndefined("$get undefined", thing.$get("f"));
+	assertNotUndefined("$get is defined", Object.$get);
+	assertEquals("$get numeric", 1, Object.$get(thing, "a"));
+	assertEquals("$get string", "2", Object.$get(thing, "b"));
+	assertEquals("$get function", "function", typeof Object.$get(thing, "c"));
+	assertEquals("$get closure", "21", Object.$get(thing, "d"));
+	assertEquals("$get null", null, Object.$get(thing, "e"));
+	assertUndefined("$get undefined", Object.$get(thing, "f"));
 }
 
 function testObject$Set() {
 	var stuff = {};
-	stuff.$set("a", 1);
+	Object.$set(stuff, "a", 1);
 	assertEquals(1, stuff.a);
-}
-
-function testWithin() {
-	assertTrue('a'.within(['a',2,null]));
-	assertFalse(Function.Null.within(['a',2,null]));
 }
 
 function testIsDefined() {
@@ -44,10 +39,10 @@ function testHasValue() {
 	assertTrue(Object.hasValue(String.Empty));
 }
 
-function testInstanceOf() {
-	assertTrue("test".instanceOf(String));
-	assertTrue(Function.Null.instanceOf(Function));
-	assertTrue("inheritence", Function.Null.instanceOf(Object));
+function testHashMapBehaviorStillExists() {
+	var map = {};
+	for (var newMember in map)
+		fail("There should be no new members in hashmap (Object.prototype)");
 }
 
 </script>
