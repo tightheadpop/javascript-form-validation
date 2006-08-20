@@ -1,0 +1,32 @@
+<html>
+<head>
+<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testValidateFocus() {
+	var handlerInvoked = false;
+	var focused = false;
+	var selected = false;
+	$('r').onvalidatefocus = function() { handlerInvoked = true; };
+	$('r').focus = function() { focused = true; };
+	$('r').select = function() { selected = true; };
+	Form.Element.validateFocus('r');
+	
+	assertTrue("onvalidate handler should be invoked", handlerInvoked);
+	assertTrue("focus should be invoked", focused);
+	assertTrue("select should be invoked", selected);
+}
+
+</script>
+</head>
+<body>
+	<form id="master" onsubmit="return false;">
+		<div class="validation-summary"></div>
+		<input required="required" id="r" />
+		<input id="a" />
+		
+		<button type="submit">go</button>
+	</form>
+</body>
+</html>
