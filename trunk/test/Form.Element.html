@@ -6,6 +6,7 @@
 
 function setUp() {
 	$('master').reset();
+	$('required').REQUIRED = true;
 }
 
 function testValidateFocus() {
@@ -173,6 +174,17 @@ function testValidOrInput() {
 
 function testInvalidOrInput() {
 	assertFalse(Form.Element.validate('or1'));
+}
+
+function testMarkRequiredField() {
+	Form.Element.markRequired($('required'));
+	assertEquals("marked required during setup", "required", $('required').className);
+}
+
+function testDontMarkUnrequiredField() {
+	$('required').REQUIRED = false;
+	Form.Element.markRequired($('required'));
+	assertEquals("should remove the required class name", String.Empty, $('required').className);
 }
 
 </script>
