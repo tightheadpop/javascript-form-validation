@@ -18,9 +18,9 @@ function testForEach() {
 }
 
 function testSome() {
-	assertFalse([].some(function(a){return true;}));
-	assertTrue([1,2].some(function(a){return a == 1;}));
-	assertFalse([1,2].some(function(a){return a == 3;}));
+	assertTrue("match returns true", [1,2].some(function(a){return a == 1;}));
+	assertFalse("no match should return false", [1,2].some(function(a){return a == 3;}));
+	assertFalse("empty array should return false", [].some(function(a){return true;}));
 }
 
 function testEvery() {
@@ -29,7 +29,7 @@ function testEvery() {
 	assertFalse("some true", [1,2].every(function(a){return a == 1;}));
 }
 
-function testFilter() {
+function testFilterByFunction() {
 	assertTrue([1,2,3].filter(function(x){return x==3;}).equals([3]));
 }
 

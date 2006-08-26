@@ -1,0 +1,40 @@
+<html>
+<head>
+	<script src="settings.js"></script>
+	
+<script type="text/javascript">
+
+function testRequired() {
+	Validation.require('required');
+	assertFalse(Form.Element.validate('required'));
+	
+	Validation.dontRequire('required');
+	assertTrue(Form.Element.validate('required'));
+}
+
+function testRequireGroupAppliesOrValidation() {
+	$('firstCheckBox').checked = false;
+	Validation.requireGroup('checkBoxGroup', 'message');
+	assertFalse("ORed checkbox", Form.Element.validate('firstCheckBox'));
+	
+	$('firstCheckBox').checked = true;
+	assertTrue(Form.Element.validate('firstCheckBox'));
+}
+
+function testRequireRadioButtonGroup() {
+
+}
+
+</script>
+</head>
+<body>
+	<form id="form">
+		<input id="required" />
+		
+		<input type="checkbox" id="firstCheckBox" name="checkBoxGroup" value="1" />
+		<input type="checkbox" id="secondCheckBox" name="checkBoxGroup" value="2" />
+		<input type="checkbox" name="checkBoxGroup" value="3" />
+		<input type="checkbox" name="checkBoxGroup" value="4" />
+	</form>
+</body>
+</html>

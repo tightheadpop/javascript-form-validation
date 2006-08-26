@@ -145,7 +145,17 @@ Array.prototype.map = function (callback, thisObject) {
 if(![].filter)
 Array.prototype.filter = function (callback, thisObject) {
 	var result = [];
-	this.forEach( function(i) {
+	if (typeof callback != 'function') {
+		var prototype = callback;
+		callback = function(item) {
+			for (var member in prototype) {
+				if (!(member in item))
+					throw $continue;
+			}
+			result.push(item);
+		};
+	}
+	this.each( function(i) {
 		if (callback.apply(thisObject || {}, [i]))
 			result.push(i);
 	});
@@ -200,6 +210,8 @@ Object.extend(Array.prototype, {
 			if (object == this[i]) return i;
 		return -1;
 	},
+	isEmpty: function() { return this.length == 0; },
+	isNotEmpty: function() { return !this.isEmpty(); },
 	distinct: function() {
 		var result = [];
 		for(var i=0; i<this.length; i++)
@@ -516,8 +528,8 @@ Object.extend(Form.Element, {
 	},
 	validate: function(element, oEvent){
 		element = $(element);
-		element.isValid = Form.Element.isValid(element, oEvent);
-		return element.isValid;
+		var valid = element.isValid = Form.Element.isValid(element, oEvent);
+		return valid;
 	}
 
 });
@@ -811,7 +823,21 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 		var id = Element.idFor(form);
 		this._messageMap[id] = [];
 		this._indexMap[id] = [];
+	},
+	require: function() {
+		$A(arguments).forEach(function(element) { $(element).REQUIRED = true; });
+	},
+	dontRequire: function() {
+		$A(arguments).forEach(function(element) { $(element).REQUIRED = false; });
+	},
+	requireGroup: function(groupName, validationMessage, filter) {
+		var requiredElements = $A(document.getElementsByName(groupName)).filter(filter || Prototype.K);
+		if (requiredElements.isNotEmpty()) {
+			requiredElements[0].OR = requiredElements.slice(1);
+			requiredElements[0]['OR-MESSAGE'] = validationMessage;
+		}
 	}
+	
 };
 var $ON = Element.propertyOn;
 
