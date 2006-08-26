@@ -100,6 +100,17 @@ a { color: blue }
 	<td><input type="file" name="fileUpload" /></td>
 </tr>
 <tr>
+	<td>Checkbox Group</td>
+	<td>
+		<fieldset><legend>Group</legend>
+			<input type="checkbox" name="group1" />1
+			<input type="checkbox" name="group1" />2
+			<input type="checkbox" name="group1" />3
+			<input type="checkbox" name="group1" />4
+		</fieldset>
+	</td>
+</tr>
+<tr>
 	<td>Multi-select</td>
 	<td>
 		<select id="multiSelect" multiple="multiple" required="true" display-name="Multi-select">
@@ -116,5 +127,8 @@ a { color: blue }
 </table>
 <input type="submit" /><input type="reset" />
 </form>
+<script type="text/javascript">
+	Validation.requireGroup('group1', "Please select at least one checkbox from the Checkbox Group.");
+</script>
 </body>
 </html>

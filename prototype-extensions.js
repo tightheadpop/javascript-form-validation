@@ -30,11 +30,7 @@ Object.extend(Validation, {
 			element['DISPLAY-NAME'] = displayName;
 		}
 	},
-	
-	require: function(element) {
-		element.REQUIRED = true;
-	},
-	
+		
 	computeDisplayName: function(element) {
 		var name = element.name.split(".")[1];
 		element['DISPLAY-NAME'] = name.replace(/^(.)/, name.charAt(0).toUpperCase()).replace(/([A-Z])/g, " $1").trim();
@@ -81,7 +77,7 @@ Behavior.causesPostBack = function(element) {
 
 Behavior.enableWhenRequiredFieldsAreProvided = function(button){
 	button = $(button);
-	new TimedEvent(Timer.Fast, function() {
+	new Timer(Interval.Fast, function() {
 		button.disabled = Form.getElements(button.form).filter(Validation.isRequired).filter(Element.isEnabled).some(Form.Element.hasNoInput); 
 	});
 };
@@ -94,11 +90,11 @@ Form.Element.hasNoInput = function(element) {
 	return !Form.Element.hasInput(element);
 };
 
-var TimedEvent = function(frequency, callback) {
+var Timer = function(frequency, callback) {
 	window.setInterval(callback, frequency * 1000);
 };
 
-var Timer = {
+var Interval = {
 	Fast: 0.100,
 	Slow: 0.300
 };
