@@ -830,14 +830,15 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 	dontRequire: function() {
 		$A(arguments).forEach(function(element) { $(element).REQUIRED = false; });
 	},
-	requireGroup: function(groupName, validationMessage, filter) {
-		var requiredElements = $A(document.getElementsByName(groupName)).filter(filter || Prototype.K);
-		if (requiredElements.isNotEmpty()) {
-			requiredElements[0].OR = requiredElements.slice(1);
-			requiredElements[0]['OR-MESSAGE'] = validationMessage;
+	requireOneFromNamedGroup: function(groupName, validationMessage) {
+		Validation.requireAtLeastOne($A(document.getElementsByName(groupName)), validationMessage);
+	},
+	requireAtLeastOne: function(elements, validationMessage) {
+		if (elements.isNotEmpty()) {
+			elements[0].OR = elements.slice(1);
+			elements[0]['OR-MESSAGE'] = validationMessage;
 		}
 	}
-	
 };
 var $ON = Element.propertyOn;
 
