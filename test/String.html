@@ -15,12 +15,12 @@ function testEmpty() {
 }
 
 function testStartsWith() {
-	assertTrue("startsWith true", "test".startsWith("te"));
+	assertTrue("startsWith true", "(te)st".startsWith("(te)"));
 	assertFalse("startsWith false", "test".startsWith("est"));
 }
 
 function testEndsWith() {
-	assertTrue("endsWith true", "test".endsWith("st"));
+	assertTrue("endsWith true", "te(st)".endsWith("(st)"));
 	assertFalse("endsWith false", "test".endsWith("s"));
 }
 

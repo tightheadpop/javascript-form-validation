@@ -1,0 +1,49 @@
+<html>
+<head>
+<script type="text/javascript" src="../../jsunit/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../prototype.js"></script>
+	
+<script type="text/javascript">
+function testStringBuilder() {
+	var s = new StringBuilder();
+	s.append('foo');
+	s.append('bar');
+	s.append('baz');
+	assertEquals('foobarbaz', s.toString());
+}
+
+function time(f) {
+	var begin = new Date();
+	f();
+	var end = new Date();
+	return end.getTime() - begin.getTime();
+}
+
+function testBuilderVersusConcat() {
+	var a = function() {
+		var s = new StringBuilder();
+		for(var i = 0; i < 10000; i++) {
+			s.append('pop');
+		}
+		s.toString();
+	}
+	var b = function() {
+		var s = '';
+		for(var i = 0; i < 10000; i++) {
+			s += 'pop';
+		}
+	}
+	
+	alert(time(a) + ':' + time(b));
+}
+
+var StringBuilder = Class.create();
+Object.extend(StringBuilder.prototype, {
+	initialize: function() { this._tokens = []; },
+	append: function(s) { this._tokens.push(s); },
+	toString: function() { return this._tokens.join(''); }
+});
+</script>
+</head>
+<body></body>
+</html>

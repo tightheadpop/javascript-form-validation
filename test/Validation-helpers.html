@@ -3,6 +3,9 @@
 	<script src="settings.js"></script>
 	
 <script type="text/javascript">
+function setUp() {
+	$('form').reset();
+}
 
 function testRequired() {
 	Validation.require('required');
@@ -12,35 +15,51 @@ function testRequired() {
 	assertTrue(Form.Element.validate('required'));
 }
 
-function testRequireGroupAppliesOrValidation() {
+function testRequireOneFromNamedGroup() {
 	$('firstCheckBox').checked = false;
-	Validation.requireOneFromNamedGroup('checkBoxGroup', 'message');
+	Validation.requireOneFromNamedGroup('message', 'checkBoxGroup');
 	assertFalse("ORed checkbox", Form.Element.validate('firstCheckBox'));
 	
-	$('firstCheckBox').checked = true;
+	$('secondCheckBox').checked = true;
 	assertTrue(Form.Element.validate('firstCheckBox'));
 }
 
 function testRequireAtLeastOne() {
-	Validation.requireAtLeastOne($('textBoxGroup1','textBoxGroup2','textBoxGroup3','textBoxGroup4'),'message');
+	Validation.requireAtLeastOne('message', $('textBoxGroup1','textBoxGroup2'));
 	assertFalse(Form.Element.validate('textBoxGroup1'));
+	
+	$('textBoxGroup2').value = 'f';
+	assertTrue(Form.Element.validate('textBoxGroup1'));
 }
+
 
 </script>
 </head>
 <body>
+function testRequireAllAsGroup() {
+	Validation.requireAllAsGroup('message', $('textBoxGroup3','textBoxGroup4'));
+	assertTrue(Form.Element.validate('textBoxGroup3'));
+	
+	$('textBoxGroup4').value = 'f';
+	assertFalse(Form.Element.validate('textBoxGroup3'));
+
+	$('textBoxGroup3').value = 'g';
+	assertTrue(Form.Element.validate('textBoxGroup3'));
+}
 	<form id="form">
 		<input id="required" />
 		
 		<input type="checkbox" id="firstCheckBox" name="checkBoxGroup" value="1" />
-		<input type="checkbox" name="checkBoxGroup" value="2" />
+		<input type="checkbox" id="secondCheckBox" name="checkBoxGroup" value="2" />
 		<input type="checkbox" name="checkBoxGroup" value="3" />
 		<input type="checkbox" name="checkBoxGroup" value="4" />
 		
 		<input id="textBoxGroup1" />
 		<input id="textBoxGroup2" />
+		
 		<input id="textBoxGroup3" />
 		<input id="textBoxGroup4" />
+		
 	</form>
 </body>
 </html>

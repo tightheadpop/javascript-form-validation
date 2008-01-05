@@ -1,7 +1,7 @@
 /*********************************************************************
 Validation javascript framework, version 4.0.0
 
-Copyright (c) 1997-2006 Matthew A. Frank
+Copyright (c) 1997-2007 Matthew A. Frank
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -22,10 +22,13 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+Find updates and more at
+
+	http://code.google.com/p/javascript-form-validation/
 
 This script now depends on Prototype, another javascript library.
 
-	http://prototype.conio.net/
+	http://prototypejs.org/
 
 *********************************************************************/
 Object.extend(Object, {
@@ -92,10 +95,10 @@ Object.extend(String.prototype, {
 		return this.replace(/^\s+|\s+$/g, String.Empty);
 	},
 	startsWith: function(prefix) {
-		return new RegExp("^" + prefix).test(this);
+		return this.indexOf(prefix) == 0;
 	},
 	endsWith: function(suffix) {
-		return new RegExp(suffix + "$").test(this);
+		return this.substr(this.length - suffix.length) === suffix;
 	},
 	contains: function (substring$) {
 		return this.indexOf(substring$) > -1;
@@ -292,7 +295,7 @@ Object.extend(Form, {
 			if(reset)form.elements[i].onreset();
 		}
 	},
-	isValid: function(form,event){
+	isValid: function(form, event){
 		var i,iElements,orderBy,position;
 		var element,elementList = $A(form.elements);
 		Form.restore(form);
@@ -312,9 +315,10 @@ Object.extend(Form, {
 					elementList[elementList.length]=element;
 			}
 		}
-		for(i=0,iElements=elementList.length;i<iElements;i++)
-			if (!Form.Element.validate(elementList[i], event))
+		elementList.forEach(function(element) {
+			if (!Form.Element.validate(element, event))
 				form.isValid = false;
+		});
 		if(form.onaftervalidate()==false)
 			return false;
 		return form.isValid;
@@ -830,10 +834,10 @@ var keyEnter = 13, keyNewLine = 10, keyTab = 9, keyBackspace = 8, keyNull = 0, k
 	dontRequire: function() {
 		$A(arguments).forEach(function(element) { $(element).REQUIRED = false; });
 	},
-	requireOneFromNamedGroup: function(groupName, validationMessage) {
-		Validation.requireAtLeastOne($A(document.getElementsByName(groupName)), validationMessage);
+	requireOneFromNamedGroup: function(validationMessage, groupName) {
+		Validation.requireAtLeastOne(validationMessage, $A(document.getElementsByName(groupName)));
 	},
-	requireAtLeastOne: function(elements, validationMessage) {
+	requireAtLeastOne: function(validationMessage, elements) {
 		if (elements.isNotEmpty()) {
 			elements[0].OR = elements.slice(1);
 			elements[0]['OR-MESSAGE'] = validationMessage;
