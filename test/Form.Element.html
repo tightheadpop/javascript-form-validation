@@ -9,6 +9,10 @@ function setUp() {
 	$('required').REQUIRED = true;
 }
 
+function testResetValidation() {
+	Form.resetValidation($('master'));
+}
+
 function testValidateFocus() {
 	var handlerInvoked = false;
 	var focused = false;
